@@ -12,9 +12,11 @@ export function parseParams(){
   if (urlParams.has("s")){
     defaultSort = urlParams.get('s');
   }
-  if (urlParams.has("p")){
-    const tagsString = urlParams.get('p');
-    showFaveMode(faveTitle, tagsString, defaultSort);
+  // av = a voir, pv = pas vu
+  if (urlParams.has("av") || urlParams.has("pv")){
+    const tagsString = urlParams.get('av');
+    const suggestedString = urlParams.get('pv');
+    showFaveMode(faveTitle, tagsString, suggestedString, defaultSort);
     return
   }
   
@@ -393,7 +395,7 @@ function isDummy(str) {
   return !isNaN(num) && num >= 1000 && num <= 1100;
 }
 
-function drawCards(subMap) {
+function drawCards(subMap, cardsContainer) {
   var asc = false;
   var sortBy = "";
   const selectedItem = $('#dropdownSort .dropdown-item.active');
@@ -453,7 +455,7 @@ function drawCards(subMap) {
       const $colGenre = $("<div>", {class: "col"}).appendTo($rowGenre);    
       const $genre = $("<p>", { class: "cardRow m-0", text: genre}).appendTo($colGenre);
     };
-  $("#cards").html($row); 
+  $(cardsContainer).html($row); 
 }
 
 function setDefaultDropdown(sortStr) {
@@ -487,22 +489,33 @@ function setDefaultDropdown(sortStr) {
   }
 }
 
-function showFaveMode(faveTitle, strParams, defaultSort) {
+function showFaveMode(faveTitle, strParams, strSuggested, defaultSort) {
   $('meta[property="og:url"]').attr('content', window.location.href);
-  const idsArray = strParams ? strParams.split(',') : [];
-  const subMap = new Map(
-    idsArray
+  const avIdArray = strParams ? strParams.split(',') : [];
+  const avSubMap = new Map(
+    avIdArray
+      .filter(key => avignonMap.has(key))
+      .map(key => [key, avignonMap.get(key)])
+  );
+
+  const pvIdArray = strSuggested ? strSuggested.split(',') : [];
+  const pvSubMap = new Map(
+    pvIdArray
       .filter(key => avignonMap.has(key))
       .map(key => [key, avignonMap.get(key)])
   );
 
   const title = `<p class="showModeTitle">${faveTitle}</p>`;
   $("body").append(title);
+  const pvTitle = pvSubMap.size > 0
+    ? `<div id="cards-pv-title" class="container mt-3"><h4 class="mb-2">Je veux voir :</h4></div>`
+    : "";
   
   const sort = `
   <div class="container">
     <div class="row">
-      <div class="col-2 offset-10 d-flex justify-content-end">
+      <div class="col-12 d-flex justify-content-between align-items-center">
+        <h4 class="mb-2">À voir</h4>
         <div class="btn-group me-2 mb-2" role="group" aria-label="Button group with nested dropdown">
           <button id="btnGroupSort" type="button" class="btn btn-primary dropdown-toggle btn-sm btnSort dropdownMenuSort" data-bs-toggle="dropdown" aria-expanded="false"></button>
           <ul class="dropdown-menu" id="dropdownSort">
@@ -517,10 +530,15 @@ function showFaveMode(faveTitle, strParams, defaultSort) {
       </div>
     </div>
   </div>
-  <div id="cards" class="container"></div>`;
+  <div id="cards" class="container"></div>
+  ${pvTitle}
+  <div id="cards-pv" class="container"></div>`;
   $("body").append(sort);
   setDefaultDropdown(defaultSort);
-  drawCards(subMap);
+  drawCards(avSubMap, "#cards");
+  if (pvSubMap.size > 0) {
+    drawCards(pvSubMap, "#cards-pv");
+  }
 
   $('#dropdownSort').on('click', '.dropdown-item', function (e) {
     e.preventDefault();
@@ -528,7 +546,10 @@ function showFaveMode(faveTitle, strParams, defaultSort) {
     $('#dropdownSort .dropdown-item').removeClass('active');
     $(this).addClass('active dropdownItemSort');
     $('#btnGroupSort').text("Trié par " + $(this).data("value") + ' ');
-    drawCards(subMap)
+    drawCards(avSubMap, "#cards");
+    if (pvSubMap.size > 0) {
+      drawCards(pvSubMap, "#cards-pv");
+    }
   });
 
   $('#sortDirection').click(function() {
@@ -538,7 +559,10 @@ function showFaveMode(faveTitle, strParams, defaultSort) {
     } else {
       icon.removeClass('fa-arrow-up-wide-short').addClass('fa-arrow-down-wide-short');
     }
-    drawCards(subMap);
+    drawCards(avSubMap, "#cards");
+    if (pvSubMap.size > 0) {
+      drawCards(pvSubMap, "#cards-pv");
+    }
   });
   setFooter();
   setShareButtons(faveTitle);
