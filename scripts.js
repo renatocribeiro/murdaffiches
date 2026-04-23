@@ -508,7 +508,7 @@ function showFaveMode(faveTitle, strParams, strSuggested, defaultSort) {
   const title = `<p class="showModeTitle">${faveTitle}</p>`;
   $("body").append(title);
   const pvTitle = pvSubMap.size > 0
-    ? `<div id="cards-pv-title" class="container mt-5"><h4 class="mb-2">Pas vus et à decouvrir :</h4></div>`
+    ? `<div id="cards-pv-title" class="container mt-5"><h4 class="mb-2">Pas vus et à découvrir :</h4></div>`
     : "";
   
   const sort = `
