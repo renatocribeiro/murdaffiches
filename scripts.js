@@ -566,5 +566,5 @@ function showFaveMode(faveTitle, strParams, strSuggested, defaultSort) {
   });
   setFooter();
   setShareButtons(faveTitle);
-  setQrCode();
+  // setQrCode();
 }
