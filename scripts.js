@@ -23,6 +23,28 @@ export function parseParams(){
   creationMode();
 }
 
+function summaryPerMap(map) {
+  let sep = " | ";
+  let s = "";
+  map.forEach((vals, _) => {
+    s += vals[0];
+    s += sep + vals[9];
+    s += sep + getDateText(vals[4], vals[5]);
+    s+= sep + formatHour(vals[6]);
+    s += "→" + formatHour(vals[7]);
+    s += " (" + formatHour(vals[8]) + ")\n";
+  });
+  return s;
+}
+
+function generateSummary(faveTitle, avSubMap, pvSubMap) {
+  let summary = faveTitle + "\n\n";
+  summary += "Vus et validés :\n"
+  summary += summaryPerMap(avSubMap);
+  summary += "\nPas vus et à découvrir :\n"
+  summary += summaryPerMap(pvSubMap);
+  return summary;
+}
 
 function setFooter(){
   const footer = `
@@ -36,13 +58,14 @@ function setFooter(){
   $("body").append(footer);
 }
 
-function setShareButtons(faveTitle){
+function setShareButtons(faveTitle, avSubMap, pvSubMap){
   const buttons = `
     <div>
       <div class="btn-group" role="group">
         <button type="button" class="btn btnShare" role="button" id="homeBtn"><i class="fa-solid fa-house" onclick="window.open('/murdaffiches', '_blank')"></i></button>
         <button type="button" class="btn btnShare"><a href="" id="mailBtn" style="color: black;"><i class="fa-solid fa-envelope"></i></a></button>
-        <button type="button" class="btn btnShare" id="clipboardBtn"><i class="fa-solid fa-clipboard"></i></button>
+        <button type="button" class="btn btnShare" id="clipboardBtn"><i class="fa-solid fa-link"></i></button>
+        <button type="button" class="btn btnShare" id="summaryBtn"><i class="fa-solid fa-file-lines"></i></button>
       </div>  
     </div>`;
   $("#footerDisclaimer").prepend(buttons);
@@ -64,7 +87,20 @@ function setShareButtons(faveTitle){
       }, 1000);
     })
     .catch(err => {
-      console.error("Failed to copy text: ", err);
+      console.error("Failed to copy url: ", err);
+    });
+  });
+  $('#summaryBtn').on('click', function() {
+    let summary = generateSummary(faveTitle, avSubMap, pvSubMap);
+    navigator.clipboard.writeText(summary)
+    .then(() => {
+      tooltip.show();
+      setTimeout(() => {
+        tooltip.hide();
+      }, 1000);
+    })
+    .catch(err => {
+      console.error("Failed to copy summary: ", err);
     });
   });
 }
@@ -565,6 +601,5 @@ function showFaveMode(faveTitle, strParams, strSuggested, defaultSort) {
     }
   });
   setFooter();
-  setShareButtons(faveTitle);
-  // setQrCode();
+  setShareButtons(faveTitle, avSubMap, pvSubMap);
 }

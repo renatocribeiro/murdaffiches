@@ -163,3 +163,8 @@ body {
   height: 100%;
   object-fit: cover;
 }
+
+#clipboardBtn {
+  padding-left: 9px;
+  padding-right: 9px;
+}
