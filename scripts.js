@@ -542,6 +542,9 @@ function showFaveMode(faveTitle, strParams, strSuggested, defaultSort) {
 
   const title = `<p class="showModeTitle">${faveTitle}</p>`;
   $("body").append(title);
+  const avTitle = avSubMap.size > 0
+    ? `<h4 class="mb-2">Vus et validés :</h4>`
+    : "";
   const pvTitle = pvSubMap.size > 0
     ? `<div id="cards-pv-title" class="container mt-5"><h4 class="mb-2">Pas vus et à découvrir :</h4></div>`
     : "";
@@ -550,7 +553,7 @@ function showFaveMode(faveTitle, strParams, strSuggested, defaultSort) {
   <div class="container">
     <div class="row">
       <div class="col-12 d-flex justify-content-between align-items-center">
-        <h4 class="mb-2">Vus et validés :</h4>
+        ${avTitle}
         <div class="btn-group me-2 mb-2" role="group" aria-label="Button group with nested dropdown">
           <button id="btnGroupSort" type="button" class="btn btn-primary dropdown-toggle btn-sm btnSort dropdownMenuSort" data-bs-toggle="dropdown" aria-expanded="false"></button>
           <ul class="dropdown-menu" id="dropdownSort">
