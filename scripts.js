@@ -1,4 +1,4 @@
-import { avignonMap } from './map.js';
+import { avignonMap } from './map26.js';
 import { bookmarkletGeneratePage } from './bookmarklet.js';
 
 export function parseParams(){
@@ -40,9 +40,9 @@ function summaryPerMap(map) {
 function generateSummary(faveTitle, avSubMap, pvSubMap) {
   let summary = faveTitle + "\n\n";
   summary += "Vus et validés :\n"
-  summary += summaryPerMap(avSubMap);
+  summary += summaryPerMap(applySort(avSubMap));
   summary += "\nPas vus et à découvrir :\n"
-  summary += summaryPerMap(pvSubMap);
+  summary += summaryPerMap(applySort(pvSubMap));
   return summary;
 }
 
@@ -408,7 +408,23 @@ function sortByType(map, asc) {
   }
 }
 
-function applySort(map, sortBy, asc) {
+function applySort(map) {
+  var asc = false;
+  var sortBy = "";
+  const selectedItem = $('#dropdownSort .dropdown-item.active');
+  if (selectedItem.length > 0) {
+    const value = selectedItem.attr('data-value');
+    const label = selectedItem.text();
+    sortBy = value;
+  } else {
+    sortBy = "heure";
+  }
+  const sortIcon = $("#sortDirection").find('i');
+    if (sortIcon.hasClass('fa-arrow-down-wide-short')) {
+      asc = false;
+    } else {
+      asc = true;
+    }
   switch (sortBy) {
     case "défaut":
       return sortByDefaut(map, asc);
@@ -432,24 +448,7 @@ function isDummy(str) {
 }
 
 function drawCards(subMap, cardsContainer) {
-  var asc = false;
-  var sortBy = "";
-  const selectedItem = $('#dropdownSort .dropdown-item.active');
-  if (selectedItem.length > 0) {
-    const value = selectedItem.attr('data-value');
-    const label = selectedItem.text();
-    sortBy = value;
-  } else {
-    sortBy = "heure";
-  }
-  const sortIcon = $("#sortDirection").find('i');
-    if (sortIcon.hasClass('fa-arrow-down-wide-short')) {
-      asc = false;
-    } else {
-      asc = true;
-    }
-
-  const sortedMap = applySort(subMap, sortBy, asc);
+  const sortedMap = applySort(subMap);
   const $row = $("<div>", { class: "row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 row-cols-xxl-6 gy-4" });
   for (const [id, vals] of sortedMap) {
       const name = vals[0]
