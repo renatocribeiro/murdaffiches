@@ -13,8 +13,8 @@ export function parseParams(){
     defaultSort = urlParams.get('s');
   }
   // av = a voir, pv = pas vu
-  if (urlParams.has("av") || urlParams.has("pv")){
-    const tagsString = urlParams.get('av');
+  if (urlParams.has("vr") || urlParams.has("pv")){
+    const tagsString = urlParams.get('vr');
     const suggestedString = urlParams.get('pv');
     showFaveMode(faveTitle, tagsString, suggestedString, defaultSort);
     return
@@ -39,7 +39,7 @@ function summaryPerMap(map) {
 
 function generateSummary(faveTitle, avSubMap, pvSubMap) {
   let summary = faveTitle + "\n\n";
-  summary += "Vus et validés :\n"
+  summary += "Vus et recomandés :\n"
   summary += summaryPerMap(applySort(avSubMap));
   summary += "\nPas vus et à découvrir :\n"
   summary += summaryPerMap(applySort(pvSubMap));
@@ -51,7 +51,7 @@ function setFooter(){
   <footer class="text-center d-flex flex-column justify-content-center py-2" id="footerDisclaimer">
     <div class="footerRow">Le 'mur d'affiches' est un projet open source indépendant.</div>
     <div class="footerRow">Il n’est ni affilié ni soutenu par AF&C.</div>
-    <div class="footerRow">Dernière mise à jour des données : 02 juillet 2025 à 21h00</div>
+    <div class="footerRow">Dernière mise à jour des données : 26 avril 2026 à 20h00</div>
     <div class="footerRow">Le code source est disponible <a class="custom-link" href="https://github.com/renatocribeiro/murdaffiches" target="_blank">ici</a></div>
     <div class="footerRow">Vous trouverez d'autres ressources sur <a class="custom-link" href="https://www.lesartsvivants.org" target="_blank">lesartsvivants.org</a></div>
   </footer>`;
@@ -543,7 +543,7 @@ function showFaveMode(faveTitle, strParams, strSuggested, defaultSort) {
   const title = `<p class="showModeTitle">${faveTitle}</p>`;
   $("body").append(title);
   const avTitle = avSubMap.size > 0
-    ? `<h4 class="mb-2">Vus et validés :</h4>`
+    ? `<h4 class="mb-2">Vus et recommandés :</h4>`
     : "";
   const pvTitle = pvSubMap.size > 0
     ? `<div id="cards-pv-title" class="container mt-5"><h4 class="mb-2">Pas vus et à découvrir :</h4></div>`
