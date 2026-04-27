@@ -543,10 +543,10 @@ function showFaveMode(faveTitle, strParams, strSuggested, defaultSort) {
   const title = `<p class="showModeTitle">${faveTitle}</p>`;
   $("body").append(title);
   const avTitle = avSubMap.size > 0
-    ? `<h4 class="mb-2">Vus et recommandés :</h4>`
+    ? `<h4 class="mb-3 section-divider-title section-divider-title-primary">Vus et recommandés</h4>`
     : "";
   const pvTitle = pvSubMap.size > 0
-    ? `<div id="cards-pv-title" class="container mt-5"><h4 class="mb-2">Pas vus et à découvrir :</h4></div>`
+    ? `<div id="cards-pv-title" class="container mt-5"><h4 class="mb-3 section-divider-title section-divider-title-gray">Pas vus et à découvrir</h4></div>`
     : "";
   
   const sort = `
